@@ -2,198 +2,180 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BINGGO Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
 <style>
-body{background:#020617;color:white}
+body{
+  font-family:Inter,sans-serif;
+  background:radial-gradient(circle at top,#0b1220,#020617);
+}
+.glass{
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.1);
+}
 </style>
 </head>
 
-<body class="min-h-screen">
+<body class="text-white min-h-screen">
 
-<!-- LOGIN -->
-<div id="loginBox" class="flex items-center justify-center min-h-screen">
-  <div class="bg-white/5 border border-white/10 rounded-2xl p-8 w-full max-w-sm">
-    <h1 class="text-2xl font-bold text-center mb-6">Admin Login</h1>
-    <input id="email" type="email" placeholder="Admin Email"
-      class="w-full px-4 py-3 mb-4 rounded bg-black/40 border border-white/10">
-    <input id="password" type="password" placeholder="Password"
-      class="w-full px-4 py-3 mb-6 rounded bg-black/40 border border-white/10">
-    <button onclick="login()"
-      class="w-full py-3 bg-blue-600 rounded-lg font-semibold">Login</button>
-    <p id="loginError" class="text-red-400 text-sm mt-4 hidden text-center">
-      Login failed
-    </p>
-  </div>
-</div>
-
-<!-- ADMIN PANEL -->
-<div id="panel" class="hidden p-6 max-w-7xl mx-auto">
-
-<header class="flex justify-between items-center mb-10">
-  <h1 class="text-3xl font-bold">BINGGO Admin Panel</h1>
-  <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg">Logout</button>
+<!-- HEADER -->
+<header class="glass px-8 py-6 flex justify-between items-center">
+  <h1 class="text-2xl font-bold font-[Space_Grotesk]">BINGGO Admin</h1>
+  <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg text-sm">
+    Logout
+  </button>
 </header>
 
+<main class="p-8 max-w-7xl mx-auto space-y-10">
+
 <!-- STATS -->
-<div class="grid md:grid-cols-3 gap-6 mb-10">
-  <div class="bg-white/5 border border-white/10 rounded-xl p-6">
-    <p class="text-sm text-white/60">Total Whitelist</p>
-    <p id="totalCount" class="text-3xl font-bold mt-2">0</p>
+<section class="grid md:grid-cols-4 gap-6">
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-white/60">Total Wallet</p>
+    <h2 id="totalWallet" class="text-3xl font-bold">0</h2>
   </div>
-</div>
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-white/60">Banned User</p>
+    <h2 id="bannedCount" class="text-3xl font-bold text-red-400">0</h2>
+  </div>
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-white/60">Total Referral</p>
+    <h2 id="totalReferral" class="text-3xl font-bold">0</h2>
+  </div>
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-white/60">Top Referral</p>
+    <h2 id="topReferral" class="text-3xl font-bold">0</h2>
+  </div>
+</section>
 
-<!-- TOP REFERRAL -->
-<section class="mb-12">
-<h2 class="text-xl font-bold mb-4">Top 10 Referrals</h2>
-<div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+<!-- ACTIONS -->
+<section class="flex gap-4">
+  <button onclick="exportCSV()" class="bg-green-600 px-6 py-3 rounded-lg">
+    Export CSV
+  </button>
+</section>
+
+<!-- TABLE -->
+<section class="glass rounded-2xl overflow-hidden">
 <table class="w-full text-sm">
 <thead class="bg-white/10">
 <tr>
-<th class="py-3 px-4 text-left">#</th>
-<th class="py-3 px-4 text-left">Referral Code</th>
-<th class="py-3 px-4 text-right">Count</th>
+  <th class="px-4 py-3 text-left">Wallet</th>
+  <th class="px-4 py-3">X</th>
+  <th class="px-4 py-3">Ref Code</th>
+  <th class="px-4 py-3">Status</th>
+  <th class="px-4 py-3 text-right">Action</th>
 </tr>
 </thead>
-<tbody id="topReferral"></tbody>
+<tbody id="table" class="divide-y divide-white/10"></tbody>
 </table>
-</div>
 </section>
 
-<!-- USER LIST -->
-<section>
-<h2 class="text-xl font-bold mb-4">Whitelist Users</h2>
-<div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-<table class="w-full text-sm">
-<thead class="bg-white/10">
-<tr>
-<th class="py-3 px-4 text-left">X Username</th>
-<th class="py-3 px-4 text-left">Referral Code</th>
-<th class="py-3 px-4 text-right">Action</th>
-</tr>
-</thead>
-<tbody id="userList"></tbody>
-</table>
-</div>
-</section>
+</main>
 
-</div>
-
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
+import { 
+  getFirestore, 
+  collection, 
+  onSnapshot, 
+  doc, 
+  updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC9D_9HQ-IB65E3c2KKcH7tSOE1pAammvM",
-  authDomain: "binggo---whitelist.firebaseapp.com",
-  projectId: "binggo---whitelist"
+/* FIREBASE CONFIG */
+const firebaseConfig={
+  apiKey:"AIzaSyC9D_9HQ-IB65E3c2KKcH7tSOE1pAammvM",
+  authDomain:"binggo---whitelist.firebaseapp.com",
+  projectId:"binggo---whitelist",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
 
-/* AUTH */
-window.login = async ()=>{
-  try{
-    await signInWithEmailAndPassword(
-      auth,
-      email.value,
-      password.value
-    );
-  }catch(e){
-    loginError.classList.remove("hidden");
-  }
-};
-
-window.logout = async ()=>{
-  await signOut(auth);
-};
-
+/* AUTH GUARD */
 onAuthStateChanged(auth,user=>{
-  if(user){
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-    loadData();
-  }else{
-    panel.classList.add("hidden");
-    loginBox.classList.remove("hidden");
+  if(!user){
+    location.href="./login.html";
   }
 });
 
-/* DATA */
-function loadData(){
+/* DOM */
+const table=document.getElementById("table");
+let bannedCount=0,totalReferral=0,maxReferral=0;
 
-  // total whitelist
-  onSnapshot(collection(db,"whitelist"),snap=>{
-    totalCount.textContent = snap.size;
+/* REALTIME DATA */
+onSnapshot(collection(db,"whitelist"),snap=>{
+  table.innerHTML="";
+  bannedCount=0; totalReferral=0; maxReferral=0;
+
+  document.getElementById("totalWallet").textContent=snap.size;
+
+  snap.forEach(d=>{
+    const data=d.data();
+
+    if(data.banned) bannedCount++;
+    if(!data.banned){
+      totalReferral+=data.refCount||0;
+      maxReferral=Math.max(maxReferral,data.refCount||0);
+    }
+
+    table.innerHTML+=`
+    <tr class="${data.banned?'opacity-40':''}">
+      <td class="px-4 py-3">${data.wallet}</td>
+      <td class="px-4 py-3">@${data.xUsername}</td>
+      <td class="px-4 py-3">${data.refCode}</td>
+      <td class="px-4 py-3 ${data.banned?'text-red-400':'text-green-400'}">
+        ${data.banned?'BANNED':'ACTIVE'}
+      </td>
+      <td class="px-4 py-3 text-right">
+        <button onclick="toggleBan('${d.id}',${data.banned})"
+          class="px-4 py-2 rounded-lg ${data.banned?'bg-blue-600':'bg-red-600'}">
+          ${data.banned?'UNBAN':'BAN'}
+        </button>
+      </td>
+    </tr>`;
   });
 
-  // top referral
-  const topQ = query(
-    collection(db,"whitelist"),
-    orderBy("refCount","desc"),
-    limit(10)
-  );
+  document.getElementById("bannedCount").textContent=bannedCount;
+  document.getElementById("totalReferral").textContent=totalReferral;
+  document.getElementById("topReferral").textContent=maxReferral;
+});
 
-  onSnapshot(topQ,snap=>{
-    topReferral.innerHTML="";
-    let i=1;
-    snap.forEach(d=>{
-      const data=d.data();
-      topReferral.innerHTML+=`
-      <tr>
-        <td class="py-3 px-4">${i++}</td>
-        <td class="py-3 px-4 font-mono text-blue-400">${data.refCode||"-"}</td>
-        <td class="py-3 px-4 text-right">${data.refCount||0}</td>
-      </tr>`;
-    });
-  });
-
-  // user list
-  onSnapshot(collection(db,"whitelist"),snap=>{
-    userList.innerHTML="";
-    snap.forEach(d=>{
-      const data=d.data();
-      userList.innerHTML+=`
-      <tr>
-        <td class="py-3 px-4">@${data.twitter||"-"}</td>
-        <td class="py-3 px-4 font-mono">${data.refCode}</td>
-        <td class="py-3 px-4 text-right">
-          <button onclick="removeUser('${d.id}')"
-            class="px-3 py-1 bg-red-600 rounded">Delete</button>
-        </td>
-      </tr>`;
-    });
-  });
-}
-
-window.removeUser = async (id)=>{
-  if(confirm("Delete this user?")){
-    await deleteDoc(doc(db,"whitelist",id));
-  }
+/* FUNCTIONS */
+window.toggleBan=async(id,status)=>{
+  if(!confirm(status?'Unban this user?':'Ban this user?')) return;
+  await updateDoc(doc(db,"whitelist",id),{banned:!status});
 };
 
+window.exportCSV=()=>{
+  let csv="wallet,x,refCode,status\n";
+  document.querySelectorAll("#table tr").forEach(r=>{
+    const c=r.querySelectorAll("td");
+    csv+=`${c[0].innerText},${c[1].innerText},${c[2].innerText},${c[3].innerText}\n`;
+  });
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download="binggo_whitelist.csv";
+  a.click();
+};
+
+window.logout=async()=>{
+  await signOut(auth);
+  location.href="./login.html";
+};
 </script>
 
 </body>
-  </html>
+</html>
