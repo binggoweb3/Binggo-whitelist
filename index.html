@@ -1,141 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BINGGO Web3 – Whitelist</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BINGGO Whitelist</title>
 
-  <style>
-    body {
-      background: radial-gradient(circle at top, #0f172a, #020617);
-    }
-    .glow {
-      box-shadow: 0 0 25px rgba(59,130,246,0.6);
-    }
-  </style>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  background: radial-gradient(circle at top, #020617, #000);
+}
+.glow {
+  box-shadow: 0 0 25px rgba(59,130,246,.6);
+}
+</style>
 </head>
 
-<body class="text-white min-h-screen flex flex-col">
+<body class="text-white min-h-screen">
 
 <!-- HEADER -->
-<header class="flex justify-between items-center px-6 py-5">
+<header class="flex justify-between items-center px-6 py-5 border-b border-white/10">
   <div class="flex items-center gap-3">
-    <img src="logo.png" class="w-10 h-10" alt="BINGGO" />
-    <span class="text-xl font-bold">BINGGO Web3</span>
+    <img src="logo.png" class="w-9 h-9" alt="BINGGO">
+    <span class="font-bold text-lg">BINGGO Web3</span>
   </div>
   <span class="text-sm text-blue-400">Solana Network</span>
 </header>
 
-<!-- HERO -->
-<section class="mt-20 text-center px-6">
-  <h1 class="text-4xl md:text-5xl font-extrabold">Whitelist Registration</h1>
-  <p class="mt-4 text-blue-300">Complete missions and secure your early access</p>
+<main class="max-w-5xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-12">
 
-  <div class="mt-8 max-w-md mx-auto">
-    <p class="text-sm text-white/60 mb-2">Whitelist Slots</p>
-    <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-      <div id="progressBar" class="h-3 bg-blue-600 rounded-full" style="width:0%"></div>
-    </div>
-    <p id="counterText" class="mt-2 text-sm text-blue-400">0 / 10,000 Filled</p>
-  </div>
-</section>
+<!-- LEFT -->
+<div>
 
-<!-- LEADERBOARD -->
-<section class="mt-16 max-w-3xl mx-auto px-6">
-  <h2 class="text-2xl font-bold text-center mb-6">Top Referrals</h2>
-
-  <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-    <table class="w-full text-sm">
-      <thead class="bg-white/10">
-        <tr>
-          <th class="py-3 px-4 text-left">#</th>
-          <th class="py-3 px-4 text-left">Referral Code</th>
-          <th class="py-3 px-4 text-right">Invites</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard" class="divide-y divide-white/10"></tbody>
-    </table>
-  </div>
-</section>
+<h1 class="text-4xl font-extrabold mb-4">Whitelist Registration</h1>
+<p class="text-blue-300 mb-8">Complete missions & secure early access</p>
 
 <!-- MISSIONS -->
-<section class="mt-16 max-w-4xl mx-auto px-6">
-  <h2 class="text-2xl font-bold text-center mb-8">Complete Missions</h2>
+<div class="space-y-4 mb-10">
+  <h2 class="text-lg font-semibold">Complete Missions</h2>
 
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Follow X (@Binggoweb3)</span>
-      <a href="https://x.com/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
+  <button data-mission onclick="completeMission(this,'https://x.com/Binggoweb3')"
+    class="w-full flex justify-between items-center px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+    <span>Follow X (@Binggoweb3)</span>
+    <span class="text-xs text-blue-400">Open</span>
+  </button>
 
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Like & Retweet Announcement</span>
-      <a href="https://x.com/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
+  <button data-mission onclick="completeMission(this,'https://t.me/Binggoweb3')"
+    class="w-full flex justify-between items-center px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+    <span>Join Telegram</span>
+    <span class="text-xs text-blue-400">Open</span>
+  </button>
 
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Join Telegram</span>
-      <a href="https://t.me/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Join Discord</span>
-      <a href="https://discord.gg/Sbxy3EyRT" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-  </div>
-</section>
+  <button data-mission onclick="completeMission(this,'https://discord.gg/Sbxy3EyRT')"
+    class="w-full flex justify-between items-center px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+    <span>Join Discord</span>
+    <span class="text-xs text-blue-400">Open</span>
+  </button>
+</div>
 
 <!-- FORM -->
-<section class="mt-16 flex justify-center px-6">
-  <div class="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 w-full max-w-md">
+<form id="form" class="space-y-4 bg-white/5 border border-white/10 rounded-2xl p-6">
+  <input id="wallet" required placeholder="Solana Wallet Address"
+    class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
 
-    <h3 class="text-2xl font-bold mb-6 text-center">Whitelist Form</h3>
+  <input id="twitter" required placeholder="X Username"
+    class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
 
-    <form id="whitelistForm" class="space-y-4">
-      <input id="wallet" required placeholder="Solana Wallet Address"
-        class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
+  <input id="refCodeInput" placeholder="Referral Code (optional)"
+    class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
 
-      <input id="twitter" required placeholder="X (Twitter) Username"
-        class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
+  <button id="submitBtn" disabled
+    class="w-full py-3 bg-blue-600/40 rounded-lg font-semibold cursor-not-allowed">
+    Complete Missions First
+  </button>
+</form>
 
-      <button id="submitBtn" disabled
-        class="w-full py-3 bg-blue-600/40 rounded-lg font-semibold cursor-not-allowed">
-        Complete Missions First
-      </button>
-    </form>
+<div id="success" class="hidden mt-6 bg-white/5 border border-white/10 rounded-xl p-4">
+  <p class="text-green-400 font-semibold">Whitelist Success</p>
+  <p class="text-sm mt-2">Your Referral Code</p>
+  <div id="myCode" class="text-xl font-bold text-blue-400 mt-1"></div>
+</div>
 
-    <div id="success" class="hidden mt-6 text-center">
-      <p class="text-green-400 font-semibold">You are successfully whitelisted</p>
-      <p class="text-sm mt-2">Your referral link</p>
-      <input id="refLink" readonly
-        class="mt-2 w-full px-3 py-2 text-sm rounded bg-black/40 border border-white/10" />
-    </div>
+<p id="error" class="hidden text-red-400 text-sm mt-4"></p>
 
-  </div>
-</section>
+</div>
 
-<footer class="mt-auto py-10 text-center text-sm text-white/50">
-  © 2026 BINGGO Web3
+<!-- RIGHT -->
+<div>
+
+<h2 class="text-2xl font-bold mb-4">Top 10 Referrals</h2>
+
+<div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+<table class="w-full text-sm">
+<thead class="bg-white/10">
+<tr>
+  <th class="px-4 py-3 text-left">#</th>
+  <th class="px-4 py-3 text-left">Referral Code</th>
+  <th class="px-4 py-3 text-right">Invites</th>
+</tr>
+</thead>
+<tbody id="leaderboard" class="divide-y divide-white/10"></tbody>
+</table>
+</div>
+
+</div>
+</main>
+
+<footer class="text-center text-sm text-white/40 py-10">
+© 2026 BINGGO Web3
 </footer>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  onSnapshot,
-  runTransaction,
-  collection,
-  query,
-  orderBy,
-  limit
+  getFirestore, doc, runTransaction,
+  collection, query, where, getDocs,
+  orderBy, limit, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 GANTI DENGAN CONFIG KAMU
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -145,345 +128,87 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// REF PARAM
-const params = new URLSearchParams(window.location.search);
-const refFrom = params.get("ref");
+const submitBtn = document.getElementById("submitBtn");
+const leaderboard = document.getElementById("leaderboard");
 
-// COUNTER
-const MAX_SLOT = 10000;
-const counterRef = doc(db, "stats", "whitelist");
+let completed = new Set();
 
-onSnapshot(counterRef, snap => {
-  if (!snap.exists()) return;
-  const c = snap.data().count || 0;
-  document.getElementById("progressBar").style.width = (c / MAX_SLOT * 100) + "%";
-  document.getElementById("counterText").textContent =
-    `${c.toLocaleString()} / ${MAX_SLOT.toLocaleString()} Filled`;
-});
+window.completeMission = (btn, url) => {
+  window.open(url, "_blank");
+  btn.classList.add("opacity-50","pointer-events-none");
+  completed.add(btn);
 
-// LEADERBOARD (TOP 10 REF)
-const lbQuery = query(
-  collection(db, "whitelist"),
-  orderBy("refCount", "desc"),
-  limit(10)
-);
-
-onSnapshot(lbQuery, snap => {
-  const tbody = document.getElementById("leaderboard");
-  tbody.innerHTML = "";
-  let i = 1;
-
-  snap.forEach(d => {
-    tbody.innerHTML += `
-      <tr>
-        <td class="py-3 px-4">${i++}</td>
-        <td class="py-3 px-4">${d.id.slice(0, 6)}...</td>
-        <td class="py-3 px-4 text-right text-blue-400">${d.data().refCount || 0}</td>
-      </tr>
-    `;
-  });
-});
-
-// ENABLE SUBMIT (SIMULASI MISSION)
-setTimeout(() => {
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Submit Whitelist";
-  submitBtn.classList.add("glow", "bg-blue-600");
-}, 3000);
-
-// SUBMIT
-whitelistForm.addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const wallet = walletInput.value.trim();
-  const twitter = twitterInput.value.trim();
-
-  if (!wallet || !twitter) return;
-
-  await runTransaction(db, async t => {
-    const counterSnap = await t.get(counterRef);
-    t.set(counterRef, {
-      count: (counterSnap.data()?.count || 0) + 1
-    }, { merge: true });
-
-    const userRef = doc(db, "whitelist", wallet);
-    const userSnap = await t.get(userRef);
-
-    if (!userSnap.exists()) {
-      t.set(userRef, {
-        twitter,
-        refCount: 0,
-        createdAt: Date.now()
-      });
-    }
-
-    if (refFrom && refFrom !== wallet) {
-      const refDoc = doc(db, "whitelist", refFrom);
-      const refSnap = await t.get(refDoc);
-      if (refSnap.exists()) {
-        t.update(refDoc, {
-          refCount: (refSnap.data().refCount || 0) + 1
-        });
-      }
-    }
-  });
-
-  // 🔗 REF LINK
-  const refLink =
-    `${window.location.origin}${window.location.pathname}?ref=${wallet}`;
-
-  document.getElementById("refLink").value = refLink;
-  document.getElementById("success").classList.remove("hidden");
-});
-
-// INPUT ALIAS
-const walletInput = document.getElementById("wallet");
-const twitterInput = document.getElementById("twitter");
-
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BINGGO Web3 – Whitelist</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body {
-      background: radial-gradient(circle at top, #0f172a, #020617);
-    }
-    .glow {
-      box-shadow: 0 0 25px rgba(59,130,246,0.6);
-    }
-  </style>
-</head>
-
-<body class="text-white min-h-screen flex flex-col">
-
-<!-- HEADER -->
-<header class="flex justify-between items-center px-6 py-5">
-  <div class="flex items-center gap-3">
-    <img src="logo.png" class="w-10 h-10" alt="BINGGO" />
-    <span class="text-xl font-bold">BINGGO Web3</span>
-  </div>
-  <span class="text-sm text-blue-400">Solana Network</span>
-</header>
-
-<!-- HERO -->
-<section class="mt-20 text-center px-6">
-  <h1 class="text-4xl md:text-5xl font-extrabold">Whitelist Registration</h1>
-  <p class="mt-4 text-blue-300">Complete missions and secure your early access</p>
-
-  <div class="mt-8 max-w-md mx-auto">
-    <p class="text-sm text-white/60 mb-2">Whitelist Slots</p>
-    <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-      <div id="progressBar" class="h-3 bg-blue-600 rounded-full" style="width:0%"></div>
-    </div>
-    <p id="counterText" class="mt-2 text-sm text-blue-400">0 / 10,000 Filled</p>
-  </div>
-</section>
-
-<!-- LEADERBOARD -->
-<section class="mt-16 max-w-3xl mx-auto px-6">
-  <h2 class="text-2xl font-bold text-center mb-6">Top Referrals</h2>
-
-  <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-    <table class="w-full text-sm">
-      <thead class="bg-white/10">
-        <tr>
-          <th class="py-3 px-4 text-left">#</th>
-          <th class="py-3 px-4 text-left">Referral Code</th>
-          <th class="py-3 px-4 text-right">Invites</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard" class="divide-y divide-white/10"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- MISSIONS -->
-<section class="mt-16 max-w-4xl mx-auto px-6">
-  <h2 class="text-2xl font-bold text-center mb-8">Complete Missions</h2>
-
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Follow X (@Binggoweb3)</span>
-      <a href="https://x.com/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Like & Retweet Announcement</span>
-      <a href="https://x.com/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Join Telegram</span>
-      <a href="https://t.me/Binggoweb3" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-
-    <div class="bg-white/5 border border-white/10 rounded-xl p-6 flex justify-between items-center">
-      <span>Join Discord</span>
-      <a href="https://discord.gg/Sbxy3EyRT" target="_blank" class="px-4 py-2 bg-blue-600 rounded-lg">Open</a>
-    </div>
-  </div>
-</section>
-
-<!-- FORM -->
-<section class="mt-16 flex justify-center px-6">
-  <div class="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 w-full max-w-md">
-
-    <h3 class="text-2xl font-bold mb-6 text-center">Whitelist Form</h3>
-
-    <form id="whitelistForm" class="space-y-4">
-      <input id="wallet" required placeholder="Solana Wallet Address"
-        class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
-
-      <input id="twitter" required placeholder="X (Twitter) Username"
-        class="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10" />
-
-      <button id="submitBtn" disabled
-        class="w-full py-3 bg-blue-600/40 rounded-lg font-semibold cursor-not-allowed">
-        Complete Missions First
-      </button>
-    </form>
-
-    <div id="success" class="hidden mt-6 text-center">
-      <p class="text-green-400 font-semibold">You are successfully whitelisted</p>
-      <p class="text-sm mt-2">Your referral link</p>
-      <input id="refLink" readonly
-        class="mt-2 w-full px-3 py-2 text-sm rounded bg-black/40 border border-white/10" />
-    </div>
-
-  </div>
-</section>
-
-<footer class="mt-auto py-10 text-center text-sm text-white/50">
-  © 2026 BINGGO Web3
-</footer>
-
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  onSnapshot,
-  runTransaction,
-  collection,
-  query,
-  orderBy,
-  limit
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyC9D_9HQ-IB65E3c2KKcH7tSOE1pAammvM",
-  authDomain: "binggo---whitelist.firebaseapp.com",
-  projectId: "binggo---whitelist",
+  if (completed.size === document.querySelectorAll("[data-mission]").length) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Whitelist";
+    submitBtn.classList.remove("bg-blue-600/40","cursor-not-allowed");
+    submitBtn.classList.add("bg-blue-600","glow");
+  }
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// REF PARAM
-const params = new URLSearchParams(window.location.search);
-const refFrom = params.get("ref");
-
-// COUNTER
-const MAX_SLOT = 10000;
-const counterRef = doc(db, "stats", "whitelist");
-
-onSnapshot(counterRef, snap => {
-  if (!snap.exists()) return;
-  const c = snap.data().count || 0;
-  document.getElementById("progressBar").style.width = (c / MAX_SLOT * 100) + "%";
-  document.getElementById("counterText").textContent =
-    `${c.toLocaleString()} / ${MAX_SLOT.toLocaleString()} Filled`;
-});
-
-// LEADERBOARD (TOP 10 REF)
-const lbQuery = query(
-  collection(db, "whitelist"),
-  orderBy("refCount", "desc"),
-  limit(10)
-);
-
-onSnapshot(lbQuery, snap => {
-  const tbody = document.getElementById("leaderboard");
-  tbody.innerHTML = "";
-  let i = 1;
-
-  snap.forEach(d => {
-    tbody.innerHTML += `
-      <tr>
-        <td class="py-3 px-4">${i++}</td>
-        <td class="py-3 px-4">${d.id.slice(0, 6)}...</td>
-        <td class="py-3 px-4 text-right text-blue-400">${d.data().refCount || 0}</td>
-      </tr>
-    `;
-  });
-});
-
-// ENABLE SUBMIT (SIMULASI MISSION)
-setTimeout(() => {
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Submit Whitelist";
-  submitBtn.classList.add("glow", "bg-blue-600");
-}, 3000);
+function generateRefCode() {
+  return "BINGGO-" + Math.random().toString(36).substring(2,7).toUpperCase();
+}
 
 // SUBMIT
-whitelistForm.addEventListener("submit", async e => {
+form.addEventListener("submit", async e => {
   e.preventDefault();
+  error.classList.add("hidden");
 
-  const wallet = walletInput.value.trim();
-  const twitter = twitterInput.value.trim();
+  const walletVal = wallet.value.trim();
+  const twitterVal = twitter.value.trim();
+  const inputCode = refCodeInput.value.trim();
 
-  if (!wallet || !twitter) return;
+  try {
+    await runTransaction(db, async t => {
+      const userRef = doc(db,"whitelist",walletVal);
+      if ((await t.get(userRef)).exists()) throw "Wallet already registered";
 
-  await runTransaction(db, async t => {
-    const counterSnap = await t.get(counterRef);
-    t.set(counterRef, {
-      count: (counterSnap.data()?.count || 0) + 1
-    }, { merge: true });
+      const myRefCode = generateRefCode();
 
-    const userRef = doc(db, "whitelist", wallet);
-    const userSnap = await t.get(userRef);
-
-    if (!userSnap.exists()) {
-      t.set(userRef, {
-        twitter,
+      t.set(userRef,{
+        refCode: myRefCode,
+        twitter: twitterVal,
         refCount: 0,
         createdAt: Date.now()
       });
-    }
 
-    if (refFrom && refFrom !== wallet) {
-      const refDoc = doc(db, "whitelist", refFrom);
-      const refSnap = await t.get(refDoc);
-      if (refSnap.exists()) {
-        t.update(refDoc, {
-          refCount: (refSnap.data().refCount || 0) + 1
+      if (inputCode) {
+        const q = query(collection(db,"whitelist"),where("refCode","==",inputCode));
+        (await getDocs(q)).forEach(d=>{
+          t.update(d.ref,{refCount:(d.data().refCount||0)+1});
         });
       }
-    }
-  });
 
-  // 🔗 REF LINK
-  const refLink =
-    `${window.location.origin}${window.location.pathname}?ref=${wallet}`;
+      myCode.textContent = myRefCode;
+    });
 
-  document.getElementById("refLink").value = refLink;
-  document.getElementById("success").classList.remove("hidden");
+    success.classList.remove("hidden");
+    submitBtn.disabled = true;
+
+  } catch(err) {
+    error.textContent = err;
+    error.classList.remove("hidden");
+  }
 });
 
-// INPUT ALIAS
-const walletInput = document.getElementById("wallet");
-const twitterInput = document.getElementById("twitter");
-
+// LEADERBOARD REALTIME
+onSnapshot(
+  query(collection(db,"whitelist"),orderBy("refCount","desc"),limit(10)),
+  snap=>{
+    leaderboard.innerHTML="";
+    let i=1;
+    snap.forEach(d=>{
+      leaderboard.innerHTML+=`
+        <tr>
+          <td class="px-4 py-3">${i++}</td>
+          <td class="px-4 py-3">${d.data().refCode}</td>
+          <td class="px-4 py-3 text-right text-blue-400">${d.data().refCount}</td>
+        </tr>`;
+    });
+  }
+);
 </script>
+
 </body>
 </html>
