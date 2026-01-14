@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BINGGO Admin Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{background:#020617;color:white}
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- LOGIN -->
+<div id="loginBox" class="flex items-center justify-center min-h-screen">
+  <div class="bg-white/5 border border-white/10 rounded-2xl p-8 w-full max-w-sm">
+    <h1 class="text-2xl font-bold text-center mb-6">Admin Login</h1>
+    <input id="email" type="email" placeholder="Admin Email"
+      class="w-full px-4 py-3 mb-4 rounded bg-black/40 border border-white/10">
+    <input id="password" type="password" placeholder="Password"
+      class="w-full px-4 py-3 mb-6 rounded bg-black/40 border border-white/10">
+    <button onclick="login()"
+      class="w-full py-3 bg-blue-600 rounded-lg font-semibold">Login</button>
+    <p id="loginError" class="text-red-400 text-sm mt-4 hidden text-center">
+      Login failed
+    </p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="panel" class="hidden p-6 max-w-7xl mx-auto">
+
+<header class="flex justify-between items-center mb-10">
+  <h1 class="text-3xl font-bold">BINGGO Admin Panel</h1>
+  <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg">Logout</button>
+</header>
+
+<!-- STATS -->
+<div class="grid md:grid-cols-3 gap-6 mb-10">
+  <div class="bg-white/5 border border-white/10 rounded-xl p-6">
+    <p class="text-sm text-white/60">Total Whitelist</p>
+    <p id="totalCount" class="text-3xl font-bold mt-2">0</p>
+  </div>
+</div>
+
+<!-- TOP REFERRAL -->
+<section class="mb-12">
+<h2 class="text-xl font-bold mb-4">Top 10 Referrals</h2>
+<div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+<table class="w-full text-sm">
+<thead class="bg-white/10">
+<tr>
+<th class="py-3 px-4 text-left">#</th>
+<th class="py-3 px-4 text-left">Referral Code</th>
+<th class="py-3 px-4 text-right">Count</th>
+</tr>
+</thead>
+<tbody id="topReferral"></tbody>
+</table>
+</div>
+</section>
+
+<!-- USER LIST -->
+<section>
+<h2 class="text-xl font-bold mb-4">Whitelist Users</h2>
+<div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+<table class="w-full text-sm">
+<thead class="bg-white/10">
+<tr>
+<th class="py-3 px-4 text-left">X Username</th>
+<th class="py-3 px-4 text-left">Referral Code</th>
+<th class="py-3 px-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody id="userList"></tbody>
+</table>
+</div>
+</section>
+
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC9D_9HQ-IB65E3c2KKcH7tSOE1pAammvM",
+  authDomain: "binggo---whitelist.firebaseapp.com",
+  projectId: "binggo---whitelist"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* AUTH */
+window.login = async ()=>{
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+  }catch(e){
+    loginError.classList.remove("hidden");
+  }
+};
+
+window.logout = async ()=>{
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+    loadData();
+  }else{
+    panel.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+  }
+});
+
+/* DATA */
+function loadData(){
+
+  // total whitelist
+  onSnapshot(collection(db,"whitelist"),snap=>{
+    totalCount.textContent = snap.size;
+  });
+
+  // top referral
+  const topQ = query(
+    collection(db,"whitelist"),
+    orderBy("refCount","desc"),
+    limit(10)
+  );
+
+  onSnapshot(topQ,snap=>{
+    topReferral.innerHTML="";
+    let i=1;
+    snap.forEach(d=>{
+      const data=d.data();
+      topReferral.innerHTML+=`
+      <tr>
+        <td class="py-3 px-4">${i++}</td>
+        <td class="py-3 px-4 font-mono text-blue-400">${data.refCode||"-"}</td>
+        <td class="py-3 px-4 text-right">${data.refCount||0}</td>
+      </tr>`;
+    });
+  });
+
+  // user list
+  onSnapshot(collection(db,"whitelist"),snap=>{
+    userList.innerHTML="";
+    snap.forEach(d=>{
+      const data=d.data();
+      userList.innerHTML+=`
+      <tr>
+        <td class="py-3 px-4">@${data.twitter||"-"}</td>
+        <td class="py-3 px-4 font-mono">${data.refCode}</td>
+        <td class="py-3 px-4 text-right">
+          <button onclick="removeUser('${d.id}')"
+            class="px-3 py-1 bg-red-600 rounded">Delete</button>
+        </td>
+      </tr>`;
+    });
+  });
+}
+
+window.removeUser = async (id)=>{
+  if(confirm("Delete this user?")){
+    await deleteDoc(doc(db,"whitelist",id));
+  }
+};
+
+</script>
+
+</body>
+  </html>
